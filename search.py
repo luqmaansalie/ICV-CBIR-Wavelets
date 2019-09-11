@@ -11,7 +11,7 @@ import csv
 # example
 # python search.py --images jpg --query 100000.jpg --type s --limit 10
 
-def show_images(images, titles = None):
+def showImages(images, titles = None):
 	#print(titles)
 	
 	plt.switch_backend('TkAgg')
@@ -157,4 +157,4 @@ for (score, resultID) in results:
 	imgResults.append(result)
 	imgNames.append(resultID[resultID.rfind("\\") + 1:])
 
-show_images(imgResults, imgNames)
+showImages(imgResults, imgNames)
