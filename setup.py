@@ -16,9 +16,9 @@ def processImage(imgpath):
 
 	# describe the image
 	if fdtype == "w":
-		features = cd.detect(image, imageID)
+		features = cd.findFeatures(image, imageID)
 	else:
-		features = cd.describe(image)
+		features = cd.findFeatures(image)
 	features = [str(f) for f in features]
 	output.write("%s,%s\n" % (imageID, ",".join(features)))
 
@@ -29,7 +29,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--images", required = True,
 	help = "Path to the directory that contains the images to be indexed")
 ap.add_argument("-i", "--type", required = True,
-	help = "Type of feature detection. w = avelet, s=segmentation")
+	help = "Type of feature detection. w = wavelet, s = segmentation")
 args = vars(ap.parse_args())
 
 imgdir = args["images"]

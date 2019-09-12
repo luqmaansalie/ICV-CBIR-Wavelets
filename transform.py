@@ -3,7 +3,7 @@ import pywt
 import cv2
 
 class WaveletTransform:
-	def detect(self, image, name):
+	def findFeatures(self, image, name):
 		features = []
 		image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 		

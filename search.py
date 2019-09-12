@@ -127,25 +127,24 @@ cd = SegmentFeatures((8, 12, 3))
 if fdtype == "w":
 	cd = WaveletTransform()
 
+imgResults = []
+imgNames = []
+
 query = cv2.imread(imgname)
-query512 = cv2.resize(query, (512, 512), interpolation = cv2.INTER_LINEAR)
+imgResults.append(query)
+imgNames.append("Query: " + imgname[imgname.rfind("/") + 1:])
+
 query = cv2.resize(query, (128, 128), interpolation = cv2.INTER_LINEAR)
 
 if fdtype == "w":
-	features = cd.detect(query, imgdir)
+	features = cd.findFeatures(query, imgdir)
 else:
-	features = cd.describe(query)
+	features = cd.findFeatures(query)
 
 # perform the search
 results = search(features, int(args["limit"]), f)
 
 print("Found matching images in %.2fs" % (time.time() - start_time))
-
-imgResults = []
-imgNames = []
-
-imgResults.append(query512)
-imgNames.append("Query: " + imgname[imgname.rfind("/") + 1:])
 
 # loop over the results
 for (score, resultID) in results:
@@ -154,7 +153,10 @@ for (score, resultID) in results:
 	result = cv2.imread(resultID)
 	#result = cv2.resize(result, (512, 512), interpolation = cv2.INTER_LINEAR)
 	
-	imgResults.append(result)
-	imgNames.append(resultID[resultID.rfind("\\") + 1:])
+	tmp = "Query: " + resultID[resultID.rfind("\\") + 1:]
+
+	if (tmp not in imgNames):
+		imgResults.append(result)
+		imgNames.append(resultID[resultID.rfind("\\") + 1:] + "\nDistance: " + str(round(score,2)))
 
 showImages(imgResults, imgNames)

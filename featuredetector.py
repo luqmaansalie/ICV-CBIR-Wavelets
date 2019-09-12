@@ -1,4 +1,3 @@
-# import the necessary packages
 import numpy as np
 import cv2
 
@@ -6,25 +5,32 @@ class SegmentFeatures:
 	def __init__(self, bins):
 		self.bins = bins
 
-	def describe(self, image):
+	def findFeatures(self, image):
 		image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 		#print(image.shape)
 		features = []
 
+		# find center and dimensions
 		(h, w) = image.shape[:2]
 		(cX, cY) = (int(w * 0.5), int(h * 0.5))
 
+		# (top-left, top-right, bottom-right, bottom-left)
 		segments = [(0, cX, 0, cY), (cX, w, 0, cY), (cX, w, cY, h), (0, cX, cY, h)]
+
+		(axesX, axesY) = (int(w * 0.75) // 2, int(h * 0.75) // 2)
+		rectMask = np.zeros(image.shape[:2], dtype = "uint8")
+		cv2.rectangle(rectMask, (cX, cY), (axesX, axesY), 255, -1)
 
 		for (startX, endX, startY, endY) in segments:
 			cornerMask = np.zeros(image.shape[:2], dtype = "uint8")
 			cv2.rectangle(cornerMask, (startX, startY), (endX, endY), 255, -1)
+			cornerMask = cv2.subtract(cornerMask, rectMask)
+
 			hist = self.histogram(image, cornerMask)
 			features.extend(hist)
 
-		#hist = self.histogram(image, rectMask)
-		#hist = self.histogram(image, ellipMask)
-		#features.extend(hist)
+		hist = self.histogram(image, rectMask)
+		features.extend(hist)
 
 		#print(features)
 		return features
